@@ -136,10 +136,6 @@ NSString *NSStringFromActionSheetVisibility(PXLActionSheetVisibility visibility)
 		_visibilty = PXLActionSheetVisibilityHidden;
 		_theme = theme;
 		
-		if (! self.title) {
-			[[NSException exceptionWithName:@"PXLActionSheetException" reason:@"Missing title." userInfo:nil] raise];
-		}
-		
 		if (! self.cancelButtonTitle) {
 			[[NSException exceptionWithName:@"PXLActionSheetException" reason:@"Missing cancel button title." userInfo:nil] raise];
 		}
