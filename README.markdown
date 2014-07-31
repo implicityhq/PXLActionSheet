@@ -3,7 +3,11 @@ PXLActionSheet
 
 A new customizable replacement for UIActionSheet.
 
-## Why Use This
+## Screenshots
+
+![Screenshot](https://github.com/jasonsilberman/PXLActionSheet/blob/master/screenshot.png)
+
+## Why?
 1. The system `UIActionSheet` are very uncustomizable.
 2. Blocks! Blocks! Blocks!
 
