@@ -17,11 +17,6 @@ static const CGFloat PXLActionSheetTitlePadding = 10.0;
 // Heights
 static const CGFloat PXLActionSheetButtonHeight = 44.0;
 
-// Animations
-static const CGFloat PXLActionSheetAnimationSpeed = 0.65;
-static const CGFloat PXLActionSheetAnimationDamping = 0.5;
-static const CGFloat PXLActionSheetAnimationSpringVelocity = 0.3;
-
 NSString *NSStringFromActionSheetVisibility(PXLActionSheetVisibility visibility) {
 	if (visibility == PXLActionSheetVisibilityHidden) {
 		return @"PXLActionSheetVisibilityHidden";
@@ -42,8 +37,7 @@ NSString *NSStringFromActionSheetVisibility(PXLActionSheetVisibility visibility)
 
 @implementation UIButton (BackgroundColorForState)
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor forState:(UIControlState)state
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor forState:(UIControlState)state {
 	UIImage *img = nil;
 	
 	CGRect rect = CGRectMake(0, 0, 2, 2);
@@ -71,8 +65,7 @@ NSString *NSStringFromActionSheetVisibility(PXLActionSheetVisibility visibility)
 
 @implementation UIView (CornerRadiusWithCorners)
 
-- (void)applyCornerRadiusMaskForCorners:(UIRectCorner)corners withRadius:(CGFloat)radius
-{
+- (void)applyCornerRadiusMaskForCorners:(UIRectCorner)corners withRadius:(CGFloat)radius {
 	UIBezierPath *rounded = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(radius, radius)];
 	
 	CAShapeLayer *shape = [[CAShapeLayer alloc] init];
@@ -84,12 +77,12 @@ NSString *NSStringFromActionSheetVisibility(PXLActionSheetVisibility visibility)
 @end
 
 @interface PXLActionSheet ()
-
+@property (nonatomic, copy) PXLActionSheetTapBlock tapBlock;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSString *cancelButtonTitle;
 @property (nonatomic) NSString *destructiveButtonTitle;
 @property (nonatomic) NSArray *otherButtonTitles;
-@property (weak, nonatomic) UIView *containerView;
+@property (nonatomic) UIView *containerView;
 
 // UI
 @property (nonatomic) UIView *actionSheetBackgroundView;
@@ -106,22 +99,23 @@ NSString *NSStringFromActionSheetVisibility(PXLActionSheetVisibility visibility)
 
 #pragma mark - Init
 
-+ (void)showInView:(UIView *)view withTheme:(PXLActionSheetTheme *)theme title:(NSString *)title cancelButtonTitle:(NSString *)cancelButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles tapBlock:(PXLActionSheetTapBlock)tapBlock {
++ (instancetype)showInView:(UIView *)view withTheme:(PXLActionSheetTheme *)theme title:(NSString *)title cancelButtonTitle:(NSString *)cancelButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles tapBlock:(PXLActionSheetTapBlock)tapBlock {
 	
-	PXLActionSheet *actionSheet = [[PXLActionSheet alloc] initWithTheme:theme title:title cancelButtonTitle:cancelButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles tapBlock:tapBlock containerView:view];
+	PXLActionSheet *actionSheet = [[PXLActionSheet alloc] initWithTheme:theme title:title cancelButtonTitle:cancelButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles tapBlock:tapBlock];
 	[actionSheet showInView:view];
+	return actionSheet;
 }
 
-- (instancetype)initWithTheme:(PXLActionSheetTheme *)theme title:(NSString *)title cancelButtonTitle:(NSString *)cancelButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles tapBlock:(PXLActionSheetTapBlock)tapBlock containerView:(UIView *)containerView {
+- (instancetype)initWithTheme:(PXLActionSheetTheme *)theme title:(NSString *)title cancelButtonTitle:(NSString *)cancelButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles tapBlock:(PXLActionSheetTapBlock)tapBlock {
 	
-	self = [super initWithFrame:containerView.bounds];
+	self = [super init];
 	if (self) {
 		_title = title;
 		_cancelButtonTitle = cancelButtonTitle;
 		_destructiveButtonTitle = destructiveButtonTitle;
 		_otherButtonTitles = otherButtonTitles;
 		_tapBlock = tapBlock;
-		_containerView = containerView;
+
 		_visibilty = PXLActionSheetVisibilityHidden;
 		_theme = theme;
 		
@@ -134,50 +128,7 @@ NSString *NSStringFromActionSheetVisibility(PXLActionSheetVisibility visibility)
 		}
 		
 		self.backgroundColor = self.theme.backdropShadowColor;
-		_containerSnapShotView = [containerView snapshotViewAfterScreenUpdates:YES];
-		[self addSubview:_containerSnapShotView];
-		
-		[_containerSnapShotView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelButtonTapped:)]];
-		
-		CGFloat actionSheetHeight = [self heightForActionSheetWithNumberOfButtons:[otherButtonTitles count]];
-		
-		_actionSheetBackgroundView = ({
-			UIView *view = [[UIView alloc] initWithFrame:({
-				CGRect frame = self.bounds;
-				frame.size.width = CGRectGetWidth(containerView.bounds);
-				frame.size.height = actionSheetHeight;
-				frame.origin.x = 0;
-				frame.origin.y = CGRectGetHeight(containerView.bounds) - actionSheetHeight;
-				frame;
-			})];
-			
-			view.backgroundColor = self.theme.backgroundColor;
-			view;
-		});
-		
-		[self addSubview:_actionSheetBackgroundView];
-		
-		if (_title) {
-			_titleLabel = ({
-				UILabel *label = [[UILabel alloc] initWithFrame:({
-					CGRect frame = CGRectZero;
-					frame = CGRectMake(0, 0, CGRectGetWidth(_actionSheetBackgroundView.bounds), [self heightForActionSheetTitleLabel]);
-					frame;
-				})];
-				
-				label.text = _title;
-				label.font = self.theme.titleFont;
-				label.numberOfLines = 0;
-				label.textAlignment = NSTextAlignmentCenter;
-				label.textColor = self.theme.titleTextColor;
-				
-				label;
-			});
-			
-			[_actionSheetBackgroundView addSubview:_titleLabel];
-		}
-		
-		[self addButtonSubViewsToView:_actionSheetBackgroundView];
+		self.isAccessibilityElement = NO;
 	}
 	
 	return self;
@@ -314,17 +265,71 @@ NSString *NSStringFromActionSheetVisibility(PXLActionSheetVisibility visibility)
 
 - (void)showInView:(UIView *)view {
 	
+	self.containerView = view;
+	self.frame = self.containerView.bounds;
+	
+	// --- SETUP buttons
+	_containerSnapShotView = [_containerView snapshotViewAfterScreenUpdates:YES];
+	_containerSnapShotView.isAccessibilityElement = YES;
+	_containerSnapShotView.accessibilityLabel = self.cancelButtonTitle;
+	[self addSubview:_containerSnapShotView];
+	
+	[_containerSnapShotView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelButtonTapped:)]];
+	
+	CGFloat actionSheetHeight = [self heightForActionSheetWithNumberOfButtons:[_otherButtonTitles count]];
+	
+	_actionSheetBackgroundView = ({
+		UIView *view = [[UIView alloc] initWithFrame:({
+			CGRect frame = self.bounds;
+			frame.size.width = CGRectGetWidth(_containerView.bounds);
+			frame.size.height = actionSheetHeight;
+			frame.origin.x = 0;
+			frame.origin.y = CGRectGetHeight(_containerView.bounds) - actionSheetHeight;
+			frame;
+		})];
+		
+		view.backgroundColor = self.theme.backgroundColor;
+		view;
+	});
+	
+	[self addSubview:_actionSheetBackgroundView];
+	
+	if (_title) {
+		_titleLabel = ({
+			UILabel *label = [[UILabel alloc] initWithFrame:({
+				CGRect frame = CGRectZero;
+				frame = CGRectMake(0, 0, CGRectGetWidth(_actionSheetBackgroundView.bounds), [self heightForActionSheetTitleLabel]);
+				frame;
+			})];
+			
+			label.text = _title;
+			label.font = self.theme.titleFont;
+			label.numberOfLines = 0;
+			label.textAlignment = NSTextAlignmentCenter;
+			label.textColor = self.theme.titleTextColor;
+			
+			label;
+		});
+		_titleLabel.isAccessibilityElement = YES;
+		_titleLabel.accessibilityLabel = self.title;
+		
+		[_actionSheetBackgroundView addSubview:_titleLabel];
+	}
+	
+	[self addButtonSubViewsToView:_actionSheetBackgroundView];
+	// --- SETUP buttons
+	
 	CGRect actionSheetBackgroundViewFinalFrame = self.actionSheetBackgroundView.frame;
 	
 	self.actionSheetBackgroundView.frame = CGRectMake(CGRectGetMinX(self.actionSheetBackgroundView.frame), CGRectGetHeight(self.containerView.frame), CGRectGetWidth(self.actionSheetBackgroundView.frame), CGRectGetHeight(self.actionSheetBackgroundView.frame));
 	
 	[self.containerView addSubview:self];
 	
-	[UIView animateWithDuration:PXLActionSheetAnimationSpeed / 2 animations:^{
+	[UIView animateWithDuration:self.theme.animationSpeed / 2 animations:^{
 		self.containerSnapShotView.layer.opacity = 0.6;
 	}];
 	
-	[UIView animateWithDuration:PXLActionSheetAnimationSpeed delay:0 usingSpringWithDamping:PXLActionSheetAnimationDamping initialSpringVelocity:PXLActionSheetAnimationSpringVelocity options:kNilOptions animations:^{
+	[UIView animateWithDuration:self.theme.animationSpeed delay:0 usingSpringWithDamping:self.theme.animationSpringDamping initialSpringVelocity:self.theme.animationSpringVelocity options:kNilOptions animations:^{
 		self.actionSheetBackgroundView.frame = actionSheetBackgroundViewFinalFrame;
 	} completion:^(BOOL finished) {
 		if (finished) {
@@ -338,7 +343,7 @@ NSString *NSStringFromActionSheetVisibility(PXLActionSheetVisibility visibility)
 
 - (void)dismissFromView:(UIView *)view {
 	
-	[UIView animateWithDuration:PXLActionSheetAnimationSpeed / 4 animations:^{
+	[UIView animateWithDuration:self.theme.animationSpeed / 4 animations:^{
 		self.containerSnapShotView.layer.opacity = 1.0;
 		self.actionSheetBackgroundView.frame = CGRectMake(CGRectGetMinX(self.actionSheetBackgroundView.frame), CGRectGetHeight(self.containerView.frame), CGRectGetWidth(self.actionSheetBackgroundView.frame), CGRectGetHeight(self.actionSheetBackgroundView.frame));
 	} completion:^(BOOL finished) {

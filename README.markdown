@@ -11,6 +11,9 @@ A new customizable replacement for UIActionSheet.
 1. The system `UIActionSheet` are very uncustomizable.
 2. Blocks! Blocks! Blocks!
 
+## Documentation
+You can check out the documentation over at [Cocoadocs](http://cocoadocs.org/docsets/PXLActionSheet/).
+
 ## Adding to Your Project
 Getting started using PXLNetworking is really easy! You can use Cocoapods or you can do it manually.
 

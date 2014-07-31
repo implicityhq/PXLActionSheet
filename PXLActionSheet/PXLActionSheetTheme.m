@@ -33,6 +33,10 @@
 	
 	theme.cornerRadius = 2.0;
 	
+	theme.animationSpeed = 0.55;
+	theme.animationSpringDamping = 0.5;
+	theme.animationSpringVelocity = 0.3;
+	
 	theme.borderColor = [UIColor colorWithWhite:0.0 alpha:0.25];
 	theme.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
 	theme.backdropShadowColor = [UIColor blackColor];

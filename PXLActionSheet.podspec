@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name = 'PXLActionSheet'
-  spec.version  = '1.0.0'
+  spec.version  = '1.0.1'
   spec.summary  = 'A new customizable replacement for UIActionSheet.'
   spec.homepage = 'https://github.com/jasonsilberman/pxlactionsheet'
   spec.author = { 'Jason Silberman' => 'j@j99.co' }

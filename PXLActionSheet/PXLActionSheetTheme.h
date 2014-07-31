@@ -33,6 +33,10 @@ typedef NS_ENUM(NSInteger, PXLActionSheetStyle) {
 
 @property (nonatomic, assign) CGFloat cornerRadius; // Only with actionSheetStyleRounded
 
+@property (nonatomic, assign) CGFloat animationSpeed;
+@property (nonatomic, assign) CGFloat animationSpringDamping;
+@property (nonatomic, assign) CGFloat animationSpringVelocity;
+
 @property (nonatomic) UIColor *borderColor;
 @property (nonatomic) UIColor *backgroundColor;
 @property (nonatomic) UIColor *backdropShadowColor;
