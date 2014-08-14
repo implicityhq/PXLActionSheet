@@ -40,7 +40,12 @@ PXLActionSheet is super simple.
 Here is an example:
 
 ```objc
-[PXLActionSheet showInView:self.view withTheme:[PXLActionSheetTheme defaultTheme] title:@"A new customizable replacement for UIActionSheet." cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@[@"Custom Fonts", @"Custom Colors", @"And More!"] tapBlock:^(PXLActionSheet *actionSheet, NSInteger tappedButtonIndex) {
+[PXLActionSheet showInView:self.view
+		withTheme:[PXLActionSheetTheme defaultTheme]
+		title:@"A new customizable replacement for UIActionSheet."
+		cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
+		otherButtonTitles:@[@"Custom Fonts", @"Custom Colors", @"And More!"]
+		tapBlock:^(PXLActionSheet *actionSheet, NSInteger tappedButtonIndex) {
 	NSLog(@"tapped at %ld", (long)tappedButtonIndex);
 }];
 ```
