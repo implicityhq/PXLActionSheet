@@ -15,7 +15,7 @@ A new customizable replacement for UIActionSheet.
 You can check out the documentation over at [Cocoadocs](http://cocoadocs.org/docsets/PXLActionSheet/).
 
 ## Adding to Your Project
-Getting started using PXLNetworking is really easy! You can use Cocoapods or you can do it manually.
+Getting started using PXLActionSheet is really easy! You can use Cocoapods or you can do it manually.
 
 ### Using CocoaPods
 Add the following to your `Podfile`.
