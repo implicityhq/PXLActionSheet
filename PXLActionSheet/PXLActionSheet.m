@@ -282,7 +282,7 @@ NSString *NSStringFromActionSheetVisibility(PXLActionSheetVisibility visibility)
 	self.frame = self.containerView.bounds;
 	
 	// --- SETUP buttons
-	_containerSnapShotView = [_containerView snapshotViewAfterScreenUpdates:YES];
+	_containerSnapShotView = [_containerView snapshotViewAfterScreenUpdates:NO];
 	_containerSnapShotView.isAccessibilityElement = YES;
 	_containerSnapShotView.accessibilityLabel = self.cancelButtonTitle;
 	[self addSubview:_containerSnapShotView];
